@@ -5,6 +5,7 @@ import Settings from './components/Settings';
 import ResultHistory from './components/ResultHistory';
 import { useWheelStore } from './store/wheelStore';
 import { Save, Download, Info, Maximize2, Minimize2, Moon, Sun, Github, Menu, X } from 'lucide-react';
+import logo from '../public/assets/wheel_of_names.png';
 
 function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -148,7 +149,7 @@ function App() {
             {/* Logo and Title */}
             <div className="flex items-center space-x-2">
               <img 
-                src="../public/assets/wheel_of_names.png" 
+                src={logo}
                 alt="Wheel of Names Logo" 
                 className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
               />
