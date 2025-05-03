@@ -148,7 +148,7 @@ function App() {
             {/* Logo and Title */}
             <div className="flex items-center space-x-2">
               <img 
-                src="/src/assets/wheel_of_names.png" 
+                src="../public/assets/wheel_of_names.png" 
                 alt="Wheel of Names Logo" 
                 className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
               />
