@@ -14,10 +14,9 @@ export const calculateSpinEndRotation = (
   // Start with at least 5 full rotations (1800 degrees)
   const baseRotation = 1800;
   
-  // Calculate the angle to position the winner at the bottom (180 degrees)
-  // Since the indicator is now at the bottom of the wheel
+  // Calculate the angle to the winner (from the starting position)
   const segmentAngle = 360 / totalNames;
-  const winnerAngle = 180 - (winnerIndex * segmentAngle);
+  const winnerAngle = 360 - (winnerIndex * segmentAngle);
   
   // Add a small random offset for natural feel (within the winner's segment)
   const randomOffset = Math.random() * (segmentAngle * 0.8);

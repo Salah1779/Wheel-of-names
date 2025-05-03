@@ -2,13 +2,37 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="./src/assets/wheel_of_names.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wheel of Names - Random Name Picker</title>
-    <meta name="description" content="A modern, interactive wheel of names application for randomly selecting winners, making decisions, and more.">
+
+    <title>Wheel of Names | Free Random Name Picker & Spinner</title>
+    <meta name="description" content="Use our free Wheel of Names to pick random names for raffles, classrooms, games, and team decisions. Fast, customizable, and fun!">
+
+    <!-- Open Graph for Facebook & LinkedIn -->
+    <meta property="og:title" content="Wheel of Names - Random Name Picker" />
+    <meta property="og:description" content="Spin the wheel to randomly pick names for raffles, games, or classrooms. 100% free and easy to use!" />
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg" />
+    <meta property="og:url" content="https://yourdomain.com" />
+    <meta property="og:type" content="website" />
+
+
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@type": "WebApplication",
+      "name": "Wheel of Names",
+      "url": "https://yourdomain.com",
+      "description": "A fun and free wheel of names app for raffles, classrooms, and games. Random name picker with full customization.",
+      "applicationCategory": "EntertainmentApplication",
+      "operatingSystem": "All"
+    }
+    </script>
+
   </head>
+
   <body>
-    <div id="root"></div>
+     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

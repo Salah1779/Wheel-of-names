@@ -7,6 +7,7 @@ import { Sparkles } from 'lucide-react';
 const Wheel: React.FC = () => {
   const wheelRef = useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = useState(0);
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
   const { names, isSpinning, spin, stopSpin, winner, config } = useWheelStore();
   
   const spinSound = useRef<HTMLAudioElement | null>(null);
@@ -82,6 +83,7 @@ const Wheel: React.FC = () => {
           });
           
           stopSpin(winnerId);
+          setShowWinnerModal(true);
         }
       };
       
@@ -90,7 +92,7 @@ const Wheel: React.FC = () => {
   }, [isSpinning, names, stopSpin, config.spinDuration, config.soundEnabled]);
   
   const handleSpin = () => {
-    if (names.length < 2) return;
+    if (names.length < 2 || isSpinning) return;
     spin();
   };
   
@@ -104,8 +106,14 @@ const Wheel: React.FC = () => {
     <div className="flex flex-col items-center justify-center gap-5">
       <div
         ref={wheelRef}
-        className="relative"
-        style={{ width: wheelSize, height: wheelSize }}
+        className="relative transform transition-transform duration-300 hover:scale-105"
+        style={{ 
+          width: wheelSize, 
+          height: wheelSize, 
+          perspective: '1000px',
+          filter: 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3))'
+        }}
+        onClick={handleSpin}
       >
         {/* Wheel */}
         <svg
@@ -113,10 +121,10 @@ const Wheel: React.FC = () => {
           height={wheelSize}
           viewBox={`0 0 ${wheelSize} ${wheelSize}`}
           style={{
-            transform: `rotate(${rotation}deg)`,
+            transform: `rotate(${rotation}deg) translateZ(20px)`,
             transition: !isSpinning ? 'transform 0.5s ease-out' : 'none',
           }}
-          className="absolute"
+          className="absolute transform rotate-3d-0-1-0-10deg"
         >
           <g transform={`translate(${centerX}, ${centerY})`}>
             {names.length > 0 ? (
@@ -167,7 +175,6 @@ const Wheel: React.FC = () => {
                       fontWeight="bold"
                       transform={`rotate(${textRotation}, ${textX}, ${textY})`}
                       style={{
-                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
                         pointerEvents: 'none',
                       }}
                     >
@@ -188,55 +195,93 @@ const Wheel: React.FC = () => {
           </g>
         </svg>
         
-        {/* Arrow pointer - Moved to bottom */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 transform rotate-180">
+        {/* Arrow pointer */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
           <div className="w-8 h-12 relative">
-            <div className="absolute inset-x-0 bottom-0 h-0 w-0 border-l-[16px] border-r-[16px] border-b-[24px] border-l-transparent border-r-transparent border-b-red-600 dark:border-b-red-500 transition-colors duration-200" />
+            <div className="absolute inset-x-0 top-0 h-0 w-0 border-l-[16px] border-r-[16px] border-t-[24px] border-l-transparent border-r-transparent border-t-red-600 dark:border-t-red-500 transition-colors duration-200" />
           </div>
         </div>
         
         {/* Center point */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="h-8 w-8 rounded-full bg-white dark:bg-gray-800 border-4 border-gray-800 dark:border-gray-300 shadow-lg z-20 transition-colors duration-200" />
+          <div className="h-8 w-8 rounded-full bg-white dark:bg-gray-800 border-4 border-gray-800 dark:border-gray-300 shadow-lg z-20 transition-colors duration-200 transform translateZ-30px" />
         </div>
+        
+        {/* Curved Click to Spin label */}
+        {!isSpinning && names.length >= 2 && (
+          <svg
+            width={wheelSize}
+            height={wheelSize}
+            viewBox={`0 0 ${wheelSize} ${wheelSize}`}
+            className="absolute pointer-events-none"
+          >
+            <path
+              id="curve"
+              d={`M${centerX - radius * 0.5},${centerY - radius * 0.2} A${radius * 0.5},${radius * 0.5} 0 0 1 ${centerX + radius * 0.5},${centerY - radius * 0.2}`}
+              fill="none"
+            />
+            <text
+              className="text-white font-bold"
+              fontSize={Math.max(16, radius / 12)}
+              fill="currentColor"
+              style={{
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              }}
+            >
+              <textPath
+                href="#curve"
+                startOffset="50%"
+                textAnchor="middle"
+                alignmentBaseline="middle"
+              >
+                Click to Spin
+              </textPath>
+            </text>
+          </svg>
+        )}
       </div>
       
-      {/* Winner announcement */}
-      {winner && (
-        <div className="mt-4 p-4 rounded-lg bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 flex items-center justify-center space-x-2 animate-fade-in transition-colors duration-200">
-          <Sparkles className="text-yellow-500" size={24} />
-          <p className="text-xl font-bold text-green-800 dark:text-green-200">{winner.text} wins!</p>
-          <Sparkles className="text-yellow-500" size={24} />
+      {/* Winner Modal */}
+      {winner && showWinnerModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 max-w-sm w-full transition-colors duration-300 transform scale-100 animate-scale-in">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <Sparkles className="text-yellow-500" size={24} />
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">Winner!</h3>
+              <Sparkles className="text-yellow-500" size={24} />
+            </div>
+            <p className="text-lg text-center text-gray-600 dark:text-gray-200 mb-4">{winner.text} wins!</p>
+            <button
+              onClick={() => setShowWinnerModal(false)}
+              className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
-      
-      {/* Spin button */}
-      <button
-        onClick={handleSpin}
-        disabled={isSpinning || names.length < 2}
-        className={`mt-6 px-8 py-3 rounded-full text-lg font-bold transition-colors transform hover:scale-105 
-          ${isSpinning 
-            ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-white' 
-            : names.length < 2 
-              ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed text-gray-500 dark:text-gray-400'
-              : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl'
-          }`}
-      >
-        {isSpinning ? 'Spinning...' : 'Spin the Wheel!'}
-      </button>
       
       {names.length < 2 && (
         <p className="text-red-500 dark:text-red-400 text-sm mt-1">Add at least 2 names to spin</p>
       )}
       
-      <style>{`
+      <style >{`
         .animate-fade-in {
-          animation: fadeIn 0.5s ease-in-out;
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+          animation: scaleIn 0.3s ease-out forwards;
         }
         
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
       `}</style>
     </div>

@@ -4,7 +4,7 @@ import { COLOR_SCHEMES } from '../store/wheelStore';
 import { Volume2, VolumeX, RotateCw, ThermometerSun } from 'lucide-react';
 
 const Settings: React.FC = () => {
-  const { config, updateConfig } = useWheelStore();
+  const { config, updateConfig, isSpinning } = useWheelStore();
   
   const colorSchemePreview = (scheme: string) => {
     const colors = COLOR_SCHEMES[scheme as keyof typeof COLOR_SCHEMES] || [];
@@ -43,7 +43,10 @@ const Settings: React.FC = () => {
             step="500"
             value={config.spinDuration}
             onChange={(e) => updateConfig({ spinDuration: parseInt(e.target.value) })}
-            className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            disabled={isSpinning}
+            className={`w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500 ${
+              isSpinning ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           />
           <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
             <span>Faster</span>
@@ -67,7 +70,10 @@ const Settings: React.FC = () => {
             step="50"
             value={config.wheelSize}
             onChange={(e) => updateConfig({ wheelSize: parseInt(e.target.value) })}
-            className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            disabled={isSpinning}
+            className={`w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500 ${
+              isSpinning ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           />
           <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mt-1">
             <span>Smaller</span>
@@ -95,7 +101,8 @@ const Settings: React.FC = () => {
         </div>
         
         <div className="flex items-center justify-between">
-          <label className="text-gray-700 dark:text-gray-300 font-medium flex items-center">
+          <label className="text-gray-7
+00 dark:text-gray-300 font-medium flex items-center">
             {config.soundEnabled ? (
               <Volume2 size={18} className="mr-2 text-blue-500" />
             ) : (

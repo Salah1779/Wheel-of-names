@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWheelStore } from '../store/wheelStore';
-import { Edit, Trash, Plus, Upload, X, Save, RotateCcw } from 'lucide-react';
+import { Edit, Trash, Plus, Upload, X, Save, RotateCcw, Shuffle } from 'lucide-react';
 
 const NamesList: React.FC = () => {
   const { 
@@ -46,6 +46,15 @@ const NamesList: React.FC = () => {
     importNames(importText);
     setImportMode(false);
     setImportText('');
+  };
+  
+  const shuffleNames = () => {
+    const shuffled = [...names];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    useWheelStore.setState({ names: shuffled });
   };
   
   return (
@@ -161,7 +170,7 @@ const NamesList: React.FC = () => {
         )}
       </div>
       
-      <div className="flex justify-between mt-3">
+      <div className="flex justify-between mt-3 space-x-2">
         <button
           onClick={() => setImportMode(true)}
           className={`text-sm px-3 py-1.5 rounded flex items-center 
@@ -169,6 +178,18 @@ const NamesList: React.FC = () => {
         >
           <Upload size={14} className="mr-1" />
           <span>Import</span>
+        </button>
+        
+        <button
+          onClick={shuffleNames}
+          disabled={names.length < 2}
+          className={`text-sm px-3 py-1.5 rounded flex items-center 
+            ${names.length < 2 
+              ? 'text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700 cursor-not-allowed' 
+              : 'text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900 transition-colors'}`}
+        >
+          <Shuffle size={14} className="mr-1" />
+          <span>Shuffle</span>
         </button>
         
         <button

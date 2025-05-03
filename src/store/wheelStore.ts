@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { WheelState, Name, SpinResult } from '../types/wheel';
+import { WheelState, SpinResult } from '../types/wheel';
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
